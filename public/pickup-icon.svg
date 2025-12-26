@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background rounded rectangle (pickup cover) -->
+  <rect x="4" y="2" width="24" height="28" rx="4" ry="4" fill="#1a1a1a" stroke="#10b981" stroke-width="1.5"/>
+
+  <!-- Coil winding indication (decorative lines) -->
+  <path d="M8 6 h16 M8 8 h16 M8 26 h16 M8 24 h16" stroke="#333" stroke-width="0.75" opacity="0.6"/>
+
+  <!-- Pole pieces (6 circles) -->
+  <circle cx="16" cy="6" r="2.2" fill="#10b981"/>
+  <circle cx="16" cy="10.4" r="2.2" fill="#10b981"/>
+  <circle cx="16" cy="14.8" r="2.2" fill="#10b981"/>
+  <circle cx="16" cy="19.2" r="2.2" fill="#10b981"/>
+  <circle cx="16" cy="23.6" r="2.2" fill="#10b981"/>
+  <circle cx="16" cy="28" r="2.2" fill="#10b981"/>
+
+  <!-- Pole piece highlights -->
+  <circle cx="15.3" cy="5.3" r="0.6" fill="#34d399" opacity="0.7"/>
+  <circle cx="15.3" cy="9.7" r="0.6" fill="#34d399" opacity="0.7"/>
+  <circle cx="15.3" cy="14.1" r="0.6" fill="#34d399" opacity="0.7"/>
+  <circle cx="15.3" cy="18.5" r="0.6" fill="#34d399" opacity="0.7"/>
+  <circle cx="15.3" cy="22.9" r="0.6" fill="#34d399" opacity="0.7"/>
+  <circle cx="15.3" cy="27.3" r="0.6" fill="#34d399" opacity="0.7"/>
+</svg>
