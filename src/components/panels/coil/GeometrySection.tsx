@@ -4,7 +4,6 @@
  * Coil form selection and dimension inputs.
  */
 
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -16,7 +15,7 @@ import {
 import { useCoilStore } from '@/store'
 import type { CoilForm } from '@/domain/types'
 import { coilForms } from './constants'
-import { useInfoFocus } from './hooks'
+import { useInfoFocus, LabelWithDesc } from './hooks'
 
 export const GeometrySection: React.FC = () => {
   const { coil, setGeometry, setForm, computed } = useCoilStore()
@@ -28,7 +27,7 @@ export const GeometrySection: React.FC = () => {
       <h4 className="text-sm font-medium text-muted-foreground">Geometry</h4>
 
       <div className="space-y-2">
-        <Label>Form</Label>
+        <LabelWithDesc label="Bobbin Form" desc="Shape of the coil winding area" />
         <Select value={geometry.form} onValueChange={(v) => setForm(v as CoilForm)}>
           <SelectTrigger onFocus={onFocus('coil.geometry.form')}>
             <SelectValue />
@@ -47,8 +46,8 @@ export const GeometrySection: React.FC = () => {
       {geometry.form === 'cylindrical' && (
         <>
           <div className="grid grid-cols-2 gap-3">
-            <Label>Pole Diameter (mm)</Label>
-            <Label>Height (mm)</Label>
+            <LabelWithDesc label="Pole Diameter" desc="Core/magnet width" />
+            <LabelWithDesc label="Height" desc="Winding window depth" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input
@@ -65,10 +64,6 @@ export const GeometrySection: React.FC = () => {
               onChange={(e) => setGeometry({ height: e.target.valueAsNumber || 0 })}
               onFocus={onFocus('coil.geometry.height')}
             />
-          </div>
-          <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-            <span>Typically 5mm (3/16")</span>
-            <span>Winding window</span>
           </div>
 
           {/* Computed outer diameter */}
@@ -92,8 +87,8 @@ export const GeometrySection: React.FC = () => {
         <>
           {/* Row 1: Width & Length */}
           <div className="grid grid-cols-2 gap-3">
-            <Label>Bobbin Width (mm)</Label>
-            <Label>Length (mm)</Label>
+            <LabelWithDesc label="Bobbin Width" desc="Inner winding area width" />
+            <LabelWithDesc label="Length" desc="Along strings direction" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input
@@ -111,15 +106,11 @@ export const GeometrySection: React.FC = () => {
               onFocus={onFocus('coil.geometry.length')}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-            <span>Inner winding area</span>
-            <span>Along strings</span>
-          </div>
 
           {/* Row 2: Height & Wall */}
           <div className="grid grid-cols-2 gap-3 mt-2">
-            <Label>Winding Height (mm)</Label>
-            <Label>Wall Thickness (mm)</Label>
+            <LabelWithDesc label="Winding Height" desc="Vertical space for wire" />
+            <LabelWithDesc label="Wall Thickness" desc="Bobbin side wall" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input
@@ -159,8 +150,8 @@ export const GeometrySection: React.FC = () => {
         <>
           {/* Row 1: Pole Diameter & Bobbin Length */}
           <div className="grid grid-cols-2 gap-3">
-            <Label>Pole Ø (mm)</Label>
-            <Label>Bobbin Length (mm)</Label>
+            <LabelWithDesc label="Pole Diameter" desc="Magnet/core rod width" />
+            <LabelWithDesc label="Bobbin Length" desc="Along strings (Strat: 68mm)" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input
@@ -178,14 +169,10 @@ export const GeometrySection: React.FC = () => {
               onFocus={onFocus('coil.geometry.length')}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-            <span>Strat: 4.76mm (0.187")</span>
-            <span>Strat: 68mm, Tele: 72mm</span>
-          </div>
 
           {/* Row 2: Height */}
           <div className="mt-2">
-            <Label>Coil Height (mm)</Label>
+            <LabelWithDesc label="Coil Height" desc="Shallow 3-6mm typical" />
           </div>
           <div>
             <Input
@@ -195,9 +182,6 @@ export const GeometrySection: React.FC = () => {
               onChange={(e) => setGeometry({ height: e.target.valueAsNumber || 0 })}
               onFocus={onFocus('coil.geometry.height')}
             />
-          </div>
-          <div className="text-xs text-muted-foreground">
-            <span>Shallow: 3-6mm typical for flatwork</span>
           </div>
 
           {/* Computed values */}

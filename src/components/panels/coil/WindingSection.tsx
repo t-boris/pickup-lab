@@ -4,7 +4,6 @@
  * Turns count, winding style, and packing factor inputs.
  */
 
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
 import {
@@ -17,7 +16,7 @@ import {
 import { useCoilStore } from '@/store'
 import type { WindingStyle } from '@/domain/types'
 import { windingStyles } from './constants'
-import { useInfoFocus } from './hooks'
+import { useInfoFocus, LabelWithDesc } from './hooks'
 
 export const WindingSection: React.FC = () => {
   const { coil, setWire } = useCoilStore()
@@ -29,7 +28,7 @@ export const WindingSection: React.FC = () => {
       <h4 className="text-sm font-medium text-muted-foreground">Winding</h4>
 
       <div className="space-y-2">
-        <Label>Turns</Label>
+        <LabelWithDesc label="Turns" desc="Number of wire loops around bobbin" />
         <Input
           type="number"
           min={1}
@@ -54,7 +53,7 @@ export const WindingSection: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <Label>Winding Style</Label>
+        <LabelWithDesc label="Winding Style" desc="Pattern affects capacitance & tone" />
         <Select
           value={wire.windingStyle}
           onValueChange={(v) => setWire({ windingStyle: v as WindingStyle })}
@@ -73,7 +72,10 @@ export const WindingSection: React.FC = () => {
       </div>
 
       <div className={`space-y-2 ${wire.turns <= 1 ? 'opacity-50' : ''}`}>
-        <Label>Packing Factor: <span translate="no">{wire.packingFactor.toFixed(2)}</span></Label>
+        <LabelWithDesc
+          label={`Packing Factor: ${wire.packingFactor.toFixed(2)}`}
+          desc="Wire density in bobbin (0.5=loose, 0.9=tight)"
+        />
         <Slider
           value={[wire.packingFactor]}
           onValueChange={([v]) => setWire({ packingFactor: v })}

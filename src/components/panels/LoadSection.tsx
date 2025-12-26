@@ -16,13 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useLoadStore, useUIStore } from '@/store'
-
-// Helper to set selected element on focus
-const useInfoFocus = () => {
-  const setSelectedElement = useUIStore((s) => s.setSelectedElement)
-  return (id: string) => () => setSelectedElement({ type: 'input', id })
-}
+import { useLoadStore } from '@/store'
+import { useInfoFocus, LabelWithDesc, ClickableStat } from './shared'
 
 const potValues = [
   { value: 10000, label: '10k' },
@@ -121,7 +116,7 @@ export const LoadSection: React.FC = () => {
 
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
-            <Label>Volume Pot</Label>
+            <LabelWithDesc label="Volume Pot" desc="Resistance value" />
             <div className="flex gap-1">
               <Input
                 type="number"
@@ -157,7 +152,7 @@ export const LoadSection: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <Label>Tone Pot</Label>
+            <LabelWithDesc label="Tone Pot" desc="Resistance value" />
             <div className="flex gap-1">
               <Input
                 type="number"
@@ -194,11 +189,12 @@ export const LoadSection: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <Label>
-            Volume Position: <span translate="no">{load.volumePosition === 1 ? '10 (Full)' :
+          <LabelWithDesc
+            label={`Volume: ${load.volumePosition === 1 ? '10 (Full)' :
               load.volumePosition === 0 ? '0 (Off)' :
-              (load.volumePosition * 10).toFixed(0)}</span>
-          </Label>
+              (load.volumePosition * 10).toFixed(0)}`}
+            desc="Rolling down darkens tone"
+          />
           <Slider
             value={[load.volumePosition]}
             onValueChange={([v]) => setVolumePosition(v)}
@@ -207,9 +203,6 @@ export const LoadSection: React.FC = () => {
             step={0.1}
             onFocus={onFocus('load.volumePosition')}
           />
-          <p className="text-xs text-muted-foreground">
-            Rolling down volume affects tone (darker when lower)
-          </p>
         </div>
       </div>
 
@@ -218,7 +211,7 @@ export const LoadSection: React.FC = () => {
         <h4 className="text-sm font-medium text-muted-foreground">Tone Control</h4>
 
         <div className="space-y-2">
-          <Label>Tone Capacitor</Label>
+          <LabelWithDesc label="Tone Capacitor" desc="Larger = darker when rolled down" />
           <div className="flex gap-1">
             <Input
               type="number"
@@ -255,11 +248,12 @@ export const LoadSection: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <Label>
-            Tone: <span translate="no">{load.tonePosition === 0 ? 'Bypass' :
+          <LabelWithDesc
+            label={`Tone: ${load.tonePosition === 0 ? 'Bypass' :
               load.tonePosition === 1 ? '0 (Full)' :
-              (10 - load.tonePosition * 10).toFixed(0)}</span>
-          </Label>
+              (10 - load.tonePosition * 10).toFixed(0)}`}
+            desc="Engages cap to cut highs"
+          />
           <Slider
             value={[load.tonePosition]}
             onValueChange={([v]) => setTonePosition(v)}
@@ -280,7 +274,10 @@ export const LoadSection: React.FC = () => {
         <h4 className="text-sm font-medium text-muted-foreground">Cable</h4>
 
         <div className="space-y-2">
-          <Label>Capacitance: <span translate="no">{(load.cableCapacitancePerMeter * 1e12).toFixed(0)} pF/m</span></Label>
+          <LabelWithDesc
+            label={`Capacitance: ${(load.cableCapacitancePerMeter * 1e12).toFixed(0)} pF/m`}
+            desc="Cable spec, higher = darker"
+          />
           <Slider
             value={[load.cableCapacitancePerMeter * 1e12]}
             onValueChange={([v]) => setCableCapacitance(v * 1e-12)}
@@ -296,7 +293,10 @@ export const LoadSection: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <Label>Length: <span translate="no">{load.cableLength} m</span></Label>
+          <LabelWithDesc
+            label={`Length: ${load.cableLength} m`}
+            desc="Total cable run to amp"
+          />
           <Slider
             value={[load.cableLength]}
             onValueChange={([v]) => setCableLength(v)}
@@ -313,7 +313,7 @@ export const LoadSection: React.FC = () => {
         <h4 className="text-sm font-medium text-muted-foreground">Amplifier</h4>
 
         <div className="space-y-2">
-          <Label>Input Impedance</Label>
+          <LabelWithDesc label="Input Impedance" desc="Higher = brighter, more dynamics" />
           <div className="flex gap-1">
             <Input
               type="number"
@@ -377,22 +377,26 @@ export const LoadSection: React.FC = () => {
         <div className="rounded-lg border bg-muted/50 p-3">
           <h4 className="mb-2 text-sm font-medium">Load Stats</h4>
           <div className="grid grid-cols-2 gap-2 text-sm">
-            <div>
-              <span className="text-muted-foreground">Cable C:</span>{' '}
-              {(computed.totalCableCapacitance * 1e12).toFixed(0)} pF
-            </div>
-            <div>
-              <span className="text-muted-foreground">R_eff:</span>{' '}
-              {(computed.effectiveLoadResistance / 1000).toFixed(0)}k
-            </div>
-            <div>
-              <span className="text-muted-foreground">f₀ loaded:</span>{' '}
-              {(computed.loadedResonance / 1000).toFixed(1)} kHz
-            </div>
-            <div>
-              <span className="text-muted-foreground">Q loaded:</span>{' '}
-              {computed.loadedQ.toFixed(1)}
-            </div>
+            <ClickableStat
+              label="Cable C"
+              value={`${(computed.totalCableCapacitance * 1e12).toFixed(0)} pF`}
+              infoId="load.computed.cableCapacitance"
+            />
+            <ClickableStat
+              label="R_eff"
+              value={`${(computed.effectiveLoadResistance / 1000).toFixed(0)}k`}
+              infoId="load.computed.effectiveResistance"
+            />
+            <ClickableStat
+              label="f₀ loaded"
+              value={`${(computed.loadedResonance / 1000).toFixed(1)} kHz`}
+              infoId="load.computed.loadedResonance"
+            />
+            <ClickableStat
+              label="Q loaded"
+              value={computed.loadedQ.toFixed(1)}
+              infoId="load.computed.loadedQ"
+            />
           </div>
         </div>
       )}

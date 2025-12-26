@@ -4,7 +4,6 @@
  * Parameter input panel for magnet type, geometry, and positioning.
  */
 
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
@@ -16,15 +15,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { useMagnetStore, useUIStore } from '@/store'
+import { useMagnetStore } from '@/store'
 import { MAGNET_PROPERTIES } from '@/lib/calibration'
 import type { MagnetType, MagnetGeometry, BladeMaterial } from '@/domain/types'
-
-// Helper to set selected element on focus
-const useInfoFocus = () => {
-  const setSelectedElement = useUIStore((s) => s.setSelectedElement)
-  return (id: string) => () => setSelectedElement({ type: 'input', id })
-}
+import { useInfoFocus, LabelWithDesc } from './shared'
 
 const magnetTypes: { value: MagnetType; label: string }[] = [
   { value: 'alnico2', label: 'AlNiCo 2' },
@@ -60,7 +54,7 @@ export const MagnetSection: React.FC = () => {
         <h4 className="text-sm font-medium text-muted-foreground">Magnet</h4>
 
         <div className="space-y-2">
-          <Label>Material</Label>
+          <LabelWithDesc label="Material" desc="Magnet alloy type" />
           <Select
             value={magnet.type}
             onValueChange={(v) => setMagnet({ type: v as MagnetType })}
@@ -80,7 +74,7 @@ export const MagnetSection: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <Label>Geometry</Label>
+          <LabelWithDesc label="Geometry" desc="Pole piece shape" />
           <Select
             value={magnet.geometry}
             onValueChange={(v) => setMagnet({ geometry: v as MagnetGeometry })}
@@ -102,7 +96,7 @@ export const MagnetSection: React.FC = () => {
         {magnet.geometry === 'rod' && (
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Diameter (mm)</Label>
+              <LabelWithDesc label="Diameter" desc="Rod magnet width" />
               <Input
                 type="number"
                 step="0.1"
@@ -115,7 +109,7 @@ export const MagnetSection: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label>Length (mm)</Label>
+              <LabelWithDesc label="Length" desc="Rod height/depth" />
               <Input
                 type="number"
                 step="0.1"
@@ -135,7 +129,7 @@ export const MagnetSection: React.FC = () => {
           <>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>Width (mm)</Label>
+                <LabelWithDesc label="Width" desc="Bar magnet width" />
                 <Input
                   type="number"
                   step="0.1"
@@ -148,7 +142,7 @@ export const MagnetSection: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Length (mm)</Label>
+                <LabelWithDesc label="Length" desc="Along strings" />
                 <Input
                   type="number"
                   step="0.1"
@@ -162,7 +156,7 @@ export const MagnetSection: React.FC = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Height (mm)</Label>
+              <LabelWithDesc label="Height" desc="Bar magnet thickness" />
               <Input
                 type="number"
                 step="0.1"
@@ -186,7 +180,7 @@ export const MagnetSection: React.FC = () => {
 
             {/* Blade parameters */}
             <div className="space-y-2">
-              <Label>Blade Material</Label>
+              <LabelWithDesc label="Blade Material" desc="Steel alloy type" />
               <Select
                 value={magnet.bladeMaterial || 'ss430'}
                 onValueChange={(v) => setMagnet({ bladeMaterial: v as BladeMaterial })}
@@ -206,7 +200,7 @@ export const MagnetSection: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>Blade Thickness (mm)</Label>
+                <LabelWithDesc label="Blade Thickness" desc="Rail width" />
                 <Input
                   type="number"
                   step="0.1"
@@ -219,7 +213,7 @@ export const MagnetSection: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Blade Protrusion (mm)</Label>
+                <LabelWithDesc label="Protrusion" desc="Above bobbin" />
                 <Input
                   type="number"
                   step="0.1"
@@ -237,7 +231,7 @@ export const MagnetSection: React.FC = () => {
             <h5 className="text-xs font-medium text-muted-foreground pt-2">Bar Magnet(s)</h5>
 
             <div className="space-y-2">
-              <Label>Magnet Count</Label>
+              <LabelWithDesc label="Magnet Count" desc="1 or 2 bar magnets" />
               <Select
                 value={(magnet.magnetCount || 1).toString()}
                 onValueChange={(v) => setMagnet({ magnetCount: parseInt(v, 10) })}
@@ -254,7 +248,7 @@ export const MagnetSection: React.FC = () => {
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-2">
-                <Label>Width (mm)</Label>
+                <LabelWithDesc label="Width" desc="Bar width" />
                 <Input
                   type="number"
                   step="0.1"
@@ -267,7 +261,7 @@ export const MagnetSection: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Length (mm)</Label>
+                <LabelWithDesc label="Length" desc="Along strings" />
                 <Input
                   type="number"
                   step="0.1"
@@ -280,7 +274,7 @@ export const MagnetSection: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Height (mm)</Label>
+                <LabelWithDesc label="Height" desc="Bar thickness" />
                 <Input
                   type="number"
                   step="0.1"
@@ -297,7 +291,10 @@ export const MagnetSection: React.FC = () => {
         )}
 
         <div className="space-y-2">
-          <Label>Magnetization: <span translate="no">{(magnet.magnetization * 100).toFixed(0)}%</span></Label>
+          <LabelWithDesc
+            label={`Magnetization: ${(magnet.magnetization * 100).toFixed(0)}%`}
+            desc="Strength relative to fully charged"
+          />
           <Slider
             value={[magnet.magnetization]}
             onValueChange={([v]) => setMagnet({ magnetization: v })}
@@ -315,7 +312,7 @@ export const MagnetSection: React.FC = () => {
         {/* Pole Pieces toggle - only for bar geometry (blade IS the pole piece) */}
         {magnet.geometry === 'bar' && (
           <div className="flex items-center justify-between" onFocus={onFocus('magnet.polePieces')}>
-            <Label>Pole Pieces</Label>
+            <LabelWithDesc label="Pole Pieces" desc="Steel slugs/screws on bar" />
             <Switch
               checked={magnet.polePieces}
               onCheckedChange={(checked) => setMagnet({ polePieces: checked })}
@@ -329,7 +326,10 @@ export const MagnetSection: React.FC = () => {
         <h4 className="text-sm font-medium text-muted-foreground">Positioning</h4>
 
         <div className="space-y-2">
-          <Label>String to Pole Distance: <span translate="no">{positioning.stringToPoleDistance.toFixed(1)} mm</span></Label>
+          <LabelWithDesc
+            label={`String Distance: ${positioning.stringToPoleDistance.toFixed(1)} mm`}
+            desc="Gap between string and pole top"
+          />
           <Slider
             value={[positioning.stringToPoleDistance]}
             onValueChange={([v]) => setPositioning({ stringToPoleDistance: v })}
@@ -343,7 +343,7 @@ export const MagnetSection: React.FC = () => {
         {/* Pole Spacing - only for rod/bar with individual poles, not for blade */}
         {magnet.geometry !== 'blade' && (
           <div className="space-y-2">
-            <Label>Pole Spacing (mm)</Label>
+            <LabelWithDesc label="Pole Spacing" desc="Distance between pole centers" />
             <Input
               type="number"
               step="0.1"

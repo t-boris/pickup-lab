@@ -37,7 +37,7 @@ import {
   transformerTemplates,
   premiumTemplates,
 } from './constants'
-import { useInfoFocus } from './hooks'
+import { useInfoFocus, LabelWithDesc, ClickableStat } from './hooks'
 
 export const WireSection: React.FC = () => {
   const { coil, setWire } = useCoilStore()
@@ -129,56 +129,64 @@ export const WireSection: React.FC = () => {
         })()}
       </div>
 
-      {/* Wire Properties - Always Visible */}
+      {/* Wire Properties - Always Visible, Clickable */}
       <div className="rounded-md border bg-muted/30 p-3 space-y-3">
         <div className="grid grid-cols-2 gap-2 text-sm">
-          <div>
-            <span className="text-muted-foreground">Copper:</span>{' '}
-            <span className="font-medium">
-              {copperGrades.find((g) => g.value === wire.copperGrade)?.label || 'Standard'}
-            </span>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Structure:</span>{' '}
-            <span className="font-medium">
-              {strandTypes.find((s) => s.value === wire.strandType)?.label || 'Solid'}
-              {wire.strandType !== 'solid' && wire.strandCount ? ` (${wire.strandCount})` : ''}
-            </span>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Insulation:</span>{' '}
-            <span className="font-medium">
-              {insulationTypes.find((i) => i.value === wire.insulation)?.label || wire.insulation}
-            </span>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Temp Class:</span>{' '}
-            <span className="font-medium">
-              {wire.insulationClass} ({getInsulationClassTemp(wire.insulationClass)}°C)
-            </span>
-          </div>
+          <ClickableStat
+            label="Copper"
+            value={copperGrades.find((g) => g.value === wire.copperGrade)?.label || 'Standard'}
+            infoId="coil.wire.copperGrade"
+          />
+          <ClickableStat
+            label="Structure"
+            value={
+              <>
+                {strandTypes.find((s) => s.value === wire.strandType)?.label || 'Solid'}
+                {wire.strandType !== 'solid' && wire.strandCount ? ` (${wire.strandCount})` : ''}
+              </>
+            }
+            infoId="coil.wire.strandType"
+          />
+          <ClickableStat
+            label="Insulation"
+            value={insulationTypes.find((i) => i.value === wire.insulation)?.label || wire.insulation}
+            infoId="coil.wire.insulation"
+          />
+          <ClickableStat
+            label="Temp Class"
+            value={`${wire.insulationClass} (${getInsulationClassTemp(wire.insulationClass)}°C)`}
+            infoId="coil.wire.insulationClass"
+          />
         </div>
         <div className="grid grid-cols-2 gap-2 text-sm border-t pt-2">
-          <div>
-            <span className="text-muted-foreground">Bare Ø:</span>{' '}
-            <span className="font-mono">{wire.wireDiameter.toFixed(4)} mm</span>
-            {(() => {
-              const awg = getAwgFromDiameter(wire.wireDiameter)
-              return awg ? <span className="text-primary ml-1">AWG {awg}</span> : null
-            })()}
-          </div>
-          <div>
-            <span className="text-muted-foreground">Total Ø:</span>{' '}
-            <span className="font-mono">
-              {getTotalWireDiameter(wire.wireDiameter, wire.insulation).toFixed(4)} mm
-            </span>
-          </div>
+          <ClickableStat
+            label="Bare Ø"
+            value={
+              <>
+                <span className="font-mono">{wire.wireDiameter.toFixed(4)} mm</span>
+                {(() => {
+                  const awg = getAwgFromDiameter(wire.wireDiameter)
+                  return awg ? <span className="text-primary ml-1">AWG {awg}</span> : null
+                })()}
+              </>
+            }
+            infoId="coil.wire.wireDiameter"
+          />
+          <ClickableStat
+            label="Total Ø"
+            value={
+              <span className="font-mono">
+                {getTotalWireDiameter(wire.wireDiameter, wire.insulation).toFixed(4)} mm
+              </span>
+            }
+            infoId="coil.wire.totalDiameter"
+          />
         </div>
       </div>
 
       {/* Wire Diameter Input */}
       <div className="space-y-2">
-        <Label>Wire Thickness (mm)</Label>
+        <LabelWithDesc label="Wire Gauge" desc="Bare conductor diameter (without insulation)" />
         <Input
           type="number"
           step="0.001"
@@ -210,7 +218,7 @@ export const WireSection: React.FC = () => {
       {/* Material Properties */}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
-          <Label>Copper Grade</Label>
+          <LabelWithDesc label="Copper Grade" desc="Purity affects resistance" />
           <Select
             value={wire.copperGrade}
             onValueChange={(v) => setWire({ copperGrade: v as CopperGrade })}
@@ -228,7 +236,7 @@ export const WireSection: React.FC = () => {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Structure</Label>
+          <LabelWithDesc label="Structure" desc="Solid, stranded, or litz" />
           <Select
             value={wire.strandType}
             onValueChange={(v) => setWire({ strandType: v as StrandType })}
@@ -250,7 +258,7 @@ export const WireSection: React.FC = () => {
       {/* Strand Count (for stranded/litz) */}
       {wire.strandType !== 'solid' && (
         <div className="space-y-2">
-          <Label>Strand Count</Label>
+          <LabelWithDesc label="Strand Count" desc="Number of individual wires in bundle" />
           <Input
             type="number"
             min={2}
@@ -266,7 +274,7 @@ export const WireSection: React.FC = () => {
       {/* Insulation */}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
-          <Label>Insulation</Label>
+          <LabelWithDesc label="Insulation" desc="Coating type, affects buildup" />
           <Select
             value={wire.insulation}
             onValueChange={(v) => setWire({ insulation: v as InsulationType })}
@@ -284,7 +292,7 @@ export const WireSection: React.FC = () => {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Temp Class</Label>
+          <LabelWithDesc label="Temp Class" desc="Max operating temperature" />
           <Select
             value={wire.insulationClass}
             onValueChange={(v) => setWire({ insulationClass: v as InsulationClass })}
